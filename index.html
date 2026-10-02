@@ -396,6 +396,9 @@ fieldset.field{border:0;padding:0;margin:0}
 @media (max-width:900px){.trade-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:520px){.trade-list{grid-template-columns:1fr}}
 
+.form-status{margin-top:14px;font-weight:600;text-align:center;min-height:1.4em}
+.form-status.error{color:#B42318}
+.form .btn[disabled]{opacity:.7;cursor:wait}
 /* Footer */
 .site-footer{background:var(--ink);color:#C7CEDB;padding:56px 0 32px;font-size:.98rem}
 .footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:40px}
@@ -759,9 +762,9 @@ fieldset.field{border:0;padding:0;margin:0}
         </ul>
       </div>
 
-      <form class="form" name="quote" method="POST" action="/thank-you.html" data-netlify="true" netlify-honeypot="bot-field">
-        <input type="hidden" name="form-name" value="quote">
-        <p class="hidden"><label>Leave this empty: <input name="bot-field"></label></p>
+      <form class="form" id="quote-form" method="POST" action="https://formspree.io/f/mgavbjpl">
+        <input type="hidden" name="_subject" value="New quote request from zenaspower.com">
+        <p class="hidden" aria-hidden="true"><label>Leave this empty: <input type="text" name="_gotcha" tabindex="-1" autocomplete="off"></label></p>
         <h3>Request a quote</h3>
         <div class="fields">
           <div class="field"><label for="f-name">Your name</label><input id="f-name" name="name" type="text" autocomplete="name" required></div>
@@ -789,7 +792,8 @@ fieldset.field{border:0;padding:0;margin:0}
           </fieldset>
           <div class="field full"><label for="f-msg">Details <span class="opt">(optional)</span></label><textarea id="f-msg" name="message" placeholder="Building type, size, quantities, timeline"></textarea></div>
         </div>
-        <button class="btn btn-primary" type="submit">Send request</button>
+        <button class="btn btn-primary" type="submit" id="quote-submit">Send request</button>
+        <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
       </form>
     </div>
   </div>
@@ -849,6 +853,27 @@ fieldset.field{border:0;padding:0;margin:0}
     const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.12});
     els.forEach(el=>io.observe(el));
   } else els.forEach(el=>el.classList.add('in'));
+
+  // Quote form: send to Formspree, then show our own thank-you page
+  const qf=document.getElementById('quote-form');
+  if(qf){
+    const btn=document.getElementById('quote-submit'), status=document.getElementById('form-status');
+    qf.addEventListener('submit',async e=>{
+      e.preventDefault();
+      if(!qf.reportValidity()) return;
+      btn.disabled=true; btn.textContent='Sending...'; status.textContent=''; status.className='form-status';
+      try{
+        const res=await fetch(qf.action,{method:'POST',body:new FormData(qf),headers:{Accept:'application/json'}});
+        if(res.ok){ window.location.href='thank-you.html'; return; }
+        const data=await res.json().catch(()=>({}));
+        throw new Error(data.errors ? data.errors.map(x=>x.message).join(', ') : 'Submission failed');
+      }catch(err){
+        status.className='form-status error';
+        status.textContent='Sorry, your request could not be sent. Please try again, or call us on +880 1511-266222.';
+        btn.disabled=false; btn.textContent='Send request';
+      }
+    });
+  }
   const y=document.getElementById('year'); if(y) y.textContent=new Date().getFullYear();
 })();
 </script>
