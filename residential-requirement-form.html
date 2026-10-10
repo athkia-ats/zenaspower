@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>সোলার চাহিদা ফর্ম | ZenAS Power</title>
+<meta name="description" content="আপনার সোলারের প্রয়োজন আমাদের জানান। ZenAS Power টিম আপনার সাথে যোগাযোগ করবে।">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;700;900&family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #0C2544;      /* ZenAS Navy */
+    --gold: #F2AC00;      /* Power Gold – accent only */
+    --ink: #0C2544;
+    --muted: #55637a;
+    --line: #dcd9d0;
+    --bg: #F4F2EC;        /* Warm Cream */
+    --white: #ffffff;
+    --error: #b3261e;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    /* Figtree for English/numbers, Hind Siliguri for Bangla */
+    font-family: "Figtree", "Hind Siliguri", Arial, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  header.site {
+    background: var(--blue);
+    border-bottom: 4px solid var(--gold);
+    padding: 24px 28px;   /* clear space around the logo */
+  }
+  /* Logo: never below 120px wide; height follows automatically (no stretching) */
+  header.site img { width: 150px; height: auto; display: block; }
+  main { max-width: 720px; margin: 0 auto; padding: 40px 20px 64px; }
+  h1 {
+    font-size: clamp(28px, 5vw, 38px);
+    line-height: 1.25;
+    font-weight: 700;
+    color: var(--blue);
+    margin: 0 0 12px;
+  }
+  h1::after {
+    content: "";
+    display: block;
+    width: 56px; height: 4px;
+    background: var(--gold);
+    margin-top: 16px;
+  }
+  .lead { color: var(--muted); font-size: 16px; margin: 0 0 32px; max-width: 54ch; }
+  form {
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 28px 22px;
+  }
+  fieldset { border: 0; padding: 0; margin: 0 0 32px; }
+  legend {
+    font-size: 15px; font-weight: 600;
+    color: var(--blue);
+    padding: 0; margin-bottom: 16px;
+  }
+  .grid { display: grid; gap: 16px; grid-template-columns: 1fr; }
+  @media (min-width: 600px) {
+    form { padding: 36px; }
+    .grid { grid-template-columns: 1fr 1fr; }
+    .full { grid-column: 1 / -1; }
+  }
+  label, .label { display: block; font-size: 15px; font-weight: 500; margin-bottom: 6px; }
+  .req { color: var(--blue); }
+  .hint { font-weight: 400; color: var(--muted); }
+  input[type="text"], input[type="tel"], input[type="email"], input[type="number"], select, textarea {
+    width: 100%;
+    font: inherit; font-size: 16px;
+    color: var(--ink);
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 12px 14px;
+    min-height: 48px;
+  }
+  textarea { min-height: 110px; resize: vertical; }
+  input:focus, select:focus, textarea:focus {
+    outline: 2px solid var(--blue);
+    outline-offset: 1px;
+    border-color: var(--blue);
+  }
+  .choices { display: flex; flex-wrap: wrap; gap: 8px; }
+  .choices label {
+    margin: 0; font-weight: 400;
+    display: inline-flex; align-items: center; gap: 8px;
+    border: 1px solid var(--line); border-radius: 8px;
+    padding: 10px 14px; min-height: 44px; cursor: pointer;
+  }
+  .choices input { accent-color: var(--blue); width: 18px; height: 18px; margin: 0; }
+  .choices label:has(input:checked) { border-color: var(--blue); background: #eef4f6; }
+  [hidden] { display: none !important; }
+  .hp { position: absolute; left: -9999px; }
+  button {
+    width: 100%;
+    font: inherit; font-size: 17px; font-weight: 700;
+    color: var(--blue); background: var(--gold);   /* navy on gold */
+    border: 0; border-radius: 8px;
+    padding: 15px 20px; min-height: 52px; cursor: pointer;
+  }
+  button:hover { background: #dd9d00; }
+  button:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+  button[disabled] { opacity: 0.6; cursor: wait; }
+  .status { margin-top: 16px; font-size: 15px; min-height: 22px; }
+  .status.error { color: var(--error); }
+  .success { text-align: center; padding: 24px 8px; }
+  .success h2 { color: var(--blue); margin: 0 0 8px; font-size: 24px; }
+  .success p { color: var(--muted); margin: 0; }
+  footer.site {
+    border-bottom: 6px solid var(--gold);
+    background: var(--blue);
+    text-align: center;
+    padding: 28px 20px;
+    font-size: 14px; color: var(--white);
+  }
+  footer.site strong { display: block; color: var(--gold); font-weight: 700; margin-bottom: 6px; }
+  footer.site a { color: inherit; text-decoration: none; }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <!-- Use the ORIGINAL logo file from the brand kit: the "transparent-for-dark-bg"
+       SVG or PNG. Upload it to your repo and set its path in src below. -->
+  <a href="/"><img src="zenas-logo.png" alt="ZenAS Power"></a>
+</header>
+
+<main>
+  <h1>সোলার চাহিদা ফর্ম</h1>
+  <p class="lead">আপনার প্রয়োজন আমাদের জানান। আমাদের টিম তথ্য দেখে আপনার সাথে যোগাযোগ করবে।</p>
+
+  <!-- REPLACE YOUR_FORM_ID with the ID from your Formspree form -->
+  <form id="reqForm" action="https://formspree.io/f/xvkzrvzq" method="POST" novalidate>
+    <input type="hidden" name="_subject" value="New Solar Requirement – zenaspower.com">
+    <input type="text" name="_gotcha" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+    <fieldset>
+      <legend>আপনার তথ্য</legend>
+      <div class="grid">
+        <div>
+          <label for="name">পুরো নাম <span class="req">*</span></label>
+          <input type="text" id="name" name="নাম" autocomplete="name" required>
+        </div>
+        <div>
+          <label for="phone">মোবাইল নম্বর <span class="req">*</span></label>
+          <input type="tel" id="phone" name="মোবাইল নম্বর" autocomplete="tel" inputmode="tel" placeholder="01XXXXXXXXX" required>
+        </div>
+        <div>
+          <label for="email">ইমেইল <span class="hint">(ঐচ্ছিক)</span></label>
+          <input type="email" id="email" name="email" autocomplete="email">
+        </div>
+        <div>
+          <label for="district">জেলা / শহর <span class="req">*</span></label>
+          <input type="text" id="district" name="জেলা" required>
+        </div>
+        <div class="full">
+          <label for="address">যেখানে সোলার বসবে তার ঠিকানা</label>
+          <input type="text" id="address" name="ঠিকানা" autocomplete="street-address">
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>কোথায় সোলার লাগবে</legend>
+      <div class="grid">
+        <div>
+          <label for="category">ধরন <span class="req">*</span></label>
+          <select id="category" name="ধরন" required>
+            <option value="">নির্বাচন করুন</option>
+            <option>বাসা / বাড়ি</option>
+            <option>ব্যবসা / বাণিজ্যিক</option>
+            <option>শিল্প / ফ্যাক্টরি</option>
+            <option>গাড়ি চার্জিং</option>
+            <option>কৃষি ও খামার</option>
+            <option>মসজিদ / প্রতিষ্ঠান</option>
+            <option>জমিতে সোলার প্রকল্প</option>
+            <option>অন্যান্য</option>
+          </select>
+        </div>
+        <div id="subWrap" hidden>
+          <label for="subtype">বিস্তারিত ধরন</label>
+          <select id="subtype" name="বিস্তারিত ধরন"></select>
+        </div>
+        <div id="vehicleWrap" hidden>
+          <label for="vehicles">দিনে কয়টি গাড়ি চার্জ দেবেন?</label>
+          <input type="number" id="vehicles" name="গাড়ির সংখ্যা" min="0" inputmode="numeric">
+        </div>
+        <div>
+          <label for="place">প্যানেল বসানোর জায়গা</label>
+          <select id="place" name="বসানোর জায়গা">
+            <option value="">নির্বাচন করুন</option>
+            <option>কংক্রিটের ছাদ</option>
+            <option>টিনের চাল</option>
+            <option>খালি জমি</option>
+            <option>অন্যান্য</option>
+          </select>
+        </div>
+        <div>
+          <label for="area">জায়গার পরিমাণ <span class="hint">(বর্গফুট বা শতক)</span></label>
+          <input type="text" id="area" name="জায়গার পরিমাণ" placeholder="যেমন: ১০০০ বর্গফুট">
+        </div>
+        <div>
+          <label for="bill">মাসিক গড় বিদ্যুৎ বিল <span class="hint">(টাকা)</span></label>
+          <input type="number" id="bill" name="মাসিক বিল (টাকা)" min="0" inputmode="numeric">
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>আপনার প্রয়োজন</legend>
+      <div class="grid">
+        <div class="full">
+          <label for="loads">কী কী চালাতে চান? <span class="hint">(যন্ত্রপাতির তালিকা)</span></label>
+          <textarea id="loads" name="যন্ত্রপাতির তালিকা" placeholder="যেমন: ১টা ফ্রিজ, ১টা মোটর, ৪টা ফ্যান, ১০টা লাইট"></textarea>
+        </div>
+        <div>
+          <label for="kw">কত কিলোওয়াট লাগবে? <span class="hint">(জানা থাকলে)</span></label>
+          <input type="text" id="kw" name="কিলোওয়াট" placeholder="যেমন: ৫ কিলোওয়াট">
+        </div>
+        <div>
+          <label for="timeline">কবে লাগাতে চান?</label>
+          <select id="timeline" name="সময়">
+            <option value="">নির্বাচন করুন</option>
+            <option>যত দ্রুত সম্ভব</option>
+            <option>১–৩ মাসের মধ্যে</option>
+            <option>৩–৬ মাসের মধ্যে</option>
+            <option>শুধু জানতে চাই</option>
+          </select>
+        </div>
+        <div class="full">
+          <span class="label">সিস্টেমের ধরন</span>
+          <div class="choices">
+            <label><input type="radio" name="সিস্টেমের ধরন" value="অন-গ্রিড"> অন-গ্রিড</label>
+            <label><input type="radio" name="সিস্টেমের ধরন" value="অফ-গ্রিড"> অফ-গ্রিড</label>
+            <label><input type="radio" name="সিস্টেমের ধরন" value="হাইব্রিড"> হাইব্রিড</label>
+            <label><input type="radio" name="সিস্টেমের ধরন" value="জানি না"> জানি না</label>
+          </div>
+        </div>
+        <div class="full">
+          <span class="label">ব্যাটারি ব্যাকআপ লাগবে?</span>
+          <div class="choices">
+            <label><input type="radio" name="ব্যাটারি ব্যাকআপ" value="হ্যাঁ"> হ্যাঁ</label>
+            <label><input type="radio" name="ব্যাটারি ব্যাকআপ" value="না"> না</label>
+            <label><input type="radio" name="ব্যাটারি ব্যাকআপ" value="জানি না"> জানি না</label>
+          </div>
+        </div>
+        <div class="full">
+          <span class="label">কিস্তিতে নিতে আগ্রহী?</span>
+          <div class="choices">
+            <label><input type="radio" name="কিস্তি" value="হ্যাঁ"> হ্যাঁ</label>
+            <label><input type="radio" name="কিস্তি" value="না"> না</label>
+          </div>
+        </div>
+        <div class="full">
+          <label for="message">আর কিছু জানাতে চান?</label>
+          <textarea id="message" name="বার্তা"></textarea>
+        </div>
+      </div>
+    </fieldset>
+
+    <button type="submit" id="submitBtn">জমা দিন</button>
+    <div class="status" id="status" role="status" aria-live="polite"></div>
+  </form>
+</main>
+
+<footer class="site">
+  <strong>Your One Stop Engineering Solution</strong>
+  <a href="tel:01753395353">01753-395353</a> &nbsp;·&nbsp;
+  <a href="mailto:info@zenaspower.com">info@zenaspower.com</a> &nbsp;·&nbsp;
+  <a href="https://zenaspower.com">zenaspower.com</a>
+</footer>
+
+<script>
+  // Sub-types for each main category. Edit freely.
+  const SUBTYPES = {
+    'বাসা / বাড়ি': ['নিজস্ব বাড়ি', 'অ্যাপার্টমেন্ট / ফ্ল্যাট', 'নির্মাণাধীন বাড়ি', 'অন্যান্য'],
+    'ব্যবসা / বাণিজ্যিক': ['দোকান / মার্কেট', 'অফিস', 'ডিশ / ইন্টারনেট ব্যবসা', 'ডায়াগনস্টিক সেন্টার', 'অন্যান্য'],
+    'শিল্প / ফ্যাক্টরি': ['ফ্যাক্টরি', 'ক্ষুদ্র ও কুটির শিল্প', 'অন্যান্য'],
+    'গাড়ি চার্জিং': ['ব্যাটারি রিকশা', 'ইজিবাইক', 'অটো চার্জিং স্টেশন / গ্যারেজ', 'অন্যান্য'],
+    'কৃষি ও খামার': ['সেচ পাম্প', 'মুরগির খামার', 'অন্যান্য'],
+    'মসজিদ / প্রতিষ্ঠান': ['মসজিদ', 'অন্যান্য প্রতিষ্ঠান'],
+    'জমিতে সোলার প্রকল্প': ['নিজের ব্যবহারের জন্য', 'গ্রিডে বিদ্যুৎ দিতে চাই (নেট মিটারিং)', 'বড় সোলার প্রকল্প']
+  };
+
+  const category = document.getElementById('category');
+  const subWrap = document.getElementById('subWrap');
+  const subtype = document.getElementById('subtype');
+  const vehicleWrap = document.getElementById('vehicleWrap');
+
+  category.addEventListener('change', () => {
+    const list = SUBTYPES[category.value];
+    subtype.innerHTML = '';
+    if (list) {
+      subtype.add(new Option('নির্বাচন করুন', ''));
+      list.forEach(t => subtype.add(new Option(t)));
+    }
+    subWrap.hidden = !list;
+    vehicleWrap.hidden = category.value !== 'গাড়ি চার্জিং';
+  });
+
+  const form = document.getElementById('reqForm');
+  const btn = document.getElementById('submitBtn');
+  const statusEl = document.getElementById('status');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    statusEl.className = 'status';
+
+    if (!form.checkValidity()) {
+      statusEl.textContent = '* চিহ্নিত ঘরগুলো পূরণ করুন।';
+      statusEl.classList.add('error');
+      form.querySelector(':invalid').focus();
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'পাঠানো হচ্ছে…';
+    statusEl.textContent = '';
+
+    try {
+      const res = await fetch(form.action, {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: new FormData(form)
+      });
+      if (!res.ok) throw new Error('Submission failed');
+
+      form.innerHTML =
+        '<div class="success"><h2>ধন্যবাদ</h2>' +
+        '<p>আপনার তথ্য আমরা পেয়েছি। আমাদের টিম শীঘ্রই আপনার সাথে যোগাযোগ করবে।</p></div>';
+    } catch (err) {
+      statusEl.textContent = 'দুঃখিত, পাঠানো যায়নি। আবার চেষ্টা করুন অথবা 01753-395353 নম্বরে কল করুন।';
+      statusEl.classList.add('error');
+      btn.disabled = false;
+      btn.textContent = 'জমা দিন';
+    }
+  });
+</script>
+</body>
+</html>
